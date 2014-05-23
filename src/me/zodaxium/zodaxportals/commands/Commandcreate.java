@@ -27,7 +27,7 @@ public class Commandcreate extends AbstractCommand{
 				Location c1 = sel.getMinimumPoint();
 				Location c2 = sel.getMaximumPoint();
 				if(c1.getWorld() == c2.getWorld()){
-					if(PortalManager.getInstance().createPortal(name, dest, c1, c2))
+					if(PortalManager.getInstance().createPortal(name, c1.getWorld(), dest, c1, c2))
 						p.sendMessage(Reference.colorize(Reference.PREFIX + "&aPortal created!"));
 					else
 						p.sendMessage(Reference.colorize(Reference.PREFIX + "&aPortal already exists!"));

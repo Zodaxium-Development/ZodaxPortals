@@ -8,6 +8,7 @@ import me.zodaxium.zodaxportals.ZodaxPortals;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public class PortalManager{
@@ -30,21 +31,23 @@ public class PortalManager{
 		Set<String> keys = plugin.getConfig().getConfigurationSection("Portal").getKeys(false);
 		if(keys.isEmpty() || keys == null) return;
 		for(String key : keys){
+			World world = Bukkit.getWorld(plugin.getConfig().getString("Portal." + key + ".world"));
 			String dest = plugin.getConfig().getString("Portal." + key + ".dest");
 			String[] co1 = plugin.getConfig().getString("Portal." + key + ".corner1").split(":");
 			String[] co2 = plugin.getConfig().getString("Portal." + key + ".corner2").split(":");
-			Location c1 = new Location(Bukkit.getWorld(co1[0]), Double.parseDouble(co1[1]), Double.parseDouble(co1[2]), Double.parseDouble(co1[3]));
-			Location c2 = new Location(Bukkit.getWorld(co2[0]), Double.parseDouble(co2[1]), Double.parseDouble(co2[2]), Double.parseDouble(co2[3]));
-			Portal p = new Portal(key, dest, generateList(c1, c2));
+			Location c1 = new Location(world, Double.parseDouble(co1[0]), Double.parseDouble(co1[1]), Double.parseDouble(co1[2]));
+			Location c2 = new Location(world, Double.parseDouble(co2[0]), Double.parseDouble(co2[1]), Double.parseDouble(co2[2]));
+			Portal p = new Portal(key, world, dest, generateList(c1, c2));
 			portals.add(p);
 		}
 	}
 	
-	public boolean createPortal(String name, String dest, Location c1, Location c2){
+	public boolean createPortal(String name, World world, String dest, Location c1, Location c2){
 		if(exists(name)) 
 			return false;
-		Portal p = new Portal(name, dest, generateList(c1, c2));
+		Portal p = new Portal(name, world, dest, generateList(c1, c2));
 		portals.add(p);
+		plugin.getConfig().set("Portal." + name + ".world", world.getName());
 		plugin.getConfig().set("Portal." + name + ".dest", dest);
 		plugin.getConfig().set("Portal." + name + ".corner1", s(c1));
 		plugin.getConfig().set("Portal." + name + ".corner2", s(c2));
@@ -88,7 +91,7 @@ public class PortalManager{
 	
 	public Portal inPortal(Location loc){
 		for(Portal p : portals){
-			if(p.getArea().contains(loc.getBlock()))
+			if(p.getArea().contains(loc.getBlock()) && p.getWorld().equals(loc.getWorld()))
 				return p;
 		}
 		return null;
@@ -117,6 +120,6 @@ public class PortalManager{
     }
 	
 	public String s(Location l){
-		return l.getWorld().getName() + ":" + l.getX() + ":" + l.getY() + ":" + l.getZ();
+		return l.getX() + ":" + l.getY() + ":" + l.getZ();
 	}
 }
