@@ -1,0 +1,10 @@
+name: ZodaxPortals
+author: Zodaxium
+version: 1
+description: Zodaxium Portal Plugin
+main: me.zodaxium.zodaxportals.ZodaxPortals
+depends: [WorldEdit]
+commands:
+  portal:
+    description: List/Create/Delete portals
+    usage: /portal
