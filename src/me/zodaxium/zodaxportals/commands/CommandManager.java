@@ -14,6 +14,7 @@ public class CommandManager implements CommandExecutor{
 	
 	public CommandManager(ZodaxPortals plugin, String cmd){
 		plugin.getCommand(cmd).setExecutor(this);
+		plugin.getCommand(cmd).setTabCompleter(new ZPTabCompleter());
 		this.plugin = plugin;
 	}
 	
