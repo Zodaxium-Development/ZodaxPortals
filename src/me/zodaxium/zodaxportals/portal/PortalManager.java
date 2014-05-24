@@ -31,12 +31,11 @@ public class PortalManager{
 		Set<String> keys = plugin.getConfig().getConfigurationSection("Portal").getKeys(false);
 		if(keys.isEmpty() || keys == null) return;
 		for(String key : keys){
-			World world = Bukkit.getWorld(plugin.getConfig().getString("Portal." + key + ".world"));
-			String dest = plugin.getConfig().getString("Portal." + key + ".dest");
-			String[] co1 = plugin.getConfig().getString("Portal." + key + ".corner1").split(":");
-			String[] co2 = plugin.getConfig().getString("Portal." + key + ".corner2").split(":");
-			Location c1 = new Location(world, Double.parseDouble(co1[0]), Double.parseDouble(co1[1]), Double.parseDouble(co1[2]));
-			Location c2 = new Location(world, Double.parseDouble(co2[0]), Double.parseDouble(co2[1]), Double.parseDouble(co2[2]));
+			String[] info = plugin.getConfig().getString("Portal." + key).split(":");
+			World world = Bukkit.getWorld(info[0]);
+			String dest = info[1];
+			Location c1 = new Location(world, Double.parseDouble(info[2]), Double.parseDouble(info[3]), Double.parseDouble(info[4]));
+			Location c2 = new Location(world, Double.parseDouble(info[5]), Double.parseDouble(info[6]), Double.parseDouble(info[7]));
 			Portal p = new Portal(key, world, dest, generateList(c1, c2));
 			portals.add(p);
 		}
@@ -47,10 +46,7 @@ public class PortalManager{
 			return false;
 		Portal p = new Portal(name, world, dest, generateList(c1, c2));
 		portals.add(p);
-		plugin.getConfig().set("Portal." + name + ".world", world.getName());
-		plugin.getConfig().set("Portal." + name + ".dest", dest);
-		plugin.getConfig().set("Portal." + name + ".corner1", s(c1));
-		plugin.getConfig().set("Portal." + name + ".corner2", s(c2));
+		plugin.getConfig().set("Portal." + name, s(world, dest, c1, c2));
 		plugin.saveConfig();
 		return true;
 	}
@@ -119,7 +115,7 @@ public class PortalManager{
         return list;
     }
 	
-	public String s(Location l){
-		return l.getX() + ":" + l.getY() + ":" + l.getZ();
+	public String s(World world, String dest, Location l1, Location l2){
+		return world.getName() + ":" + dest + ":" + l1.getBlockX() + ":" + l1.getBlockY() + ":" + l1.getBlockZ() + ":" + l2.getBlockX() + ":" + l2.getBlockY() + ":" + l2.getBlockZ();
 	}
 }
